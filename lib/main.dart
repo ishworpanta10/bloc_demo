@@ -1,115 +1,38 @@
-import 'package:bloc_demo/cubit/counter_cubit.dart';
+import 'package:bloc_demo/logic/cubit/counter_cubit.dart';
+import 'package:bloc_demo/presentation/routes/app_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(
+    MyApp(),
+  );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => CounterCubit(),
-      child: MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-        ),
-        home: MyHomePage(title: 'Flutter Demo Home Page'),
-      ),
-    );
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final AppRoute _appRoute = AppRoute();
+
+  @override
+  void dispose() {
+    _appRoute.dispose();
+    super.dispose();
   }
-}
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Flutter Bloc',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            BlocConsumer<CounterCubit, CounterState>(
-              listener: (context, state) {
-                if (state.isIncrement == true) {
-                  Scaffold.of(context).showSnackBar(
-                    SnackBar(
-                      duration: Duration(microseconds: 300),
-                      content: Text('Incremented'),
-                    ),
-                  );
-                } else {
-                  Scaffold.of(context).showSnackBar(
-                    SnackBar(
-                      duration: Duration(microseconds: 300),
-                      content: Text('Decremented'),
-                    ),
-                  );
-                }
-              },
-              builder: (context, state) {
-                if (state.counterValue < 0) {
-                  return Text(
-                    'Oops ! Negative Value\n ${state.counterValue.toString()} ',
-                    style: Theme.of(context).textTheme.headline4,
-                    textAlign: TextAlign.center,
-                  );
-                }
-                if (state.counterValue % 2 == 0) {
-                  return Text(
-                    'Even Value\n ${state.counterValue.toString()} ',
-                    style: Theme.of(context).textTheme.headline4,
-                    textAlign: TextAlign.center,
-                  );
-                }
-                return Text(
-                  state.counterValue.toString(),
-                  style: Theme.of(context).textTheme.headline4,
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          FloatingActionButton(
-            onPressed: () {
-              context.read<CounterCubit>().increment();
-            },
-            tooltip: 'Increment',
-            child: Icon(Icons.add),
-          ),
-          SizedBox(
-            width: 20,
-          ),
-          FloatingActionButton(
-            onPressed: () {
-              BlocProvider.of<CounterCubit>(context).decrement();
-            },
-            tooltip: 'Decrement',
-            child: Icon(Icons.remove),
-          ),
-        ],
-      ),
+      onGenerateRoute: _appRoute.onGenerateRoute,
     );
   }
 }
