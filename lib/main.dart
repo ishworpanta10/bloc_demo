@@ -39,36 +39,55 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            BlocBuilder<CounterCubit, CounterState>(
-              builder: (context, state) {
-                if (state.counterValue < 0) {
+      body: BlocListener<CounterCubit, CounterState>(
+        listener: (context, state) {
+          if (state.isIncrement == true) {
+            Scaffold.of(context).showSnackBar(
+              SnackBar(
+                duration: Duration(microseconds: 300),
+                content: Text('Incremented'),
+              ),
+            );
+          } else {
+            Scaffold.of(context).showSnackBar(
+              SnackBar(
+                duration: Duration(microseconds: 300),
+                content: Text('Decremented'),
+              ),
+            );
+          }
+        },
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                'You have pushed the button this many times:',
+              ),
+              BlocBuilder<CounterCubit, CounterState>(
+                builder: (context, state) {
+                  if (state.counterValue < 0) {
+                    return Text(
+                      'Oops ! Negative Value\n ${state.counterValue.toString()} ',
+                      style: Theme.of(context).textTheme.headline4,
+                      textAlign: TextAlign.center,
+                    );
+                  }
+                  if (state.counterValue % 2 == 0) {
+                    return Text(
+                      'Even Value\n ${state.counterValue.toString()} ',
+                      style: Theme.of(context).textTheme.headline4,
+                      textAlign: TextAlign.center,
+                    );
+                  }
                   return Text(
-                    'Oops ! Negative Value\n ${state.counterValue.toString()} ',
+                    state.counterValue.toString(),
                     style: Theme.of(context).textTheme.headline4,
-                    textAlign: TextAlign.center,
                   );
-                }
-                if (state.counterValue % 2 == 0) {
-                  return Text(
-                    'Even Value\n ${state.counterValue.toString()} ',
-                    style: Theme.of(context).textTheme.headline4,
-                    textAlign: TextAlign.center,
-                  );
-                }
-                return Text(
-                  state.counterValue.toString(),
-                  style: Theme.of(context).textTheme.headline4,
-                );
-              },
-            ),
-          ],
+                },
+              ),
+            ],
+          ),
         ),
       ),
       floatingActionButton: Row(
