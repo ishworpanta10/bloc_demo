@@ -1,4 +1,6 @@
 import 'package:bloc_demo/logic/cubit/counter_cubit.dart';
+import 'package:bloc_demo/logic/cubit/internet_cubit.dart';
+import 'package:bloc_demo/presentation/constants/enums.dart';
 import 'package:bloc_demo/presentation/constants/route_constamts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,6 +16,28 @@ class HomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            BlocBuilder<InternetCubit, InternetState>(
+                builder: (context, state) {
+              if (state is InternetConnectedState &&
+                  state.connectionType == ConnectionType.Wifi) {
+                return Text(
+                  'Wi Fi',
+                  style: TextStyle(color: Colors.green),
+                );
+              } else if (state is InternetConnectedState &&
+                  state.connectionType == ConnectionType.Mobile) {
+                return Text(
+                  'Mobile Data',
+                  style: TextStyle(color: Colors.greenAccent),
+                );
+              } else if (state is InternetDisconnectedState) {
+                return Text(
+                  'Disconnect',
+                  style: TextStyle(color: Colors.red),
+                );
+              }
+              return CircularProgressIndicator();
+            }),
             Text(
               'You have pushed the button this many times:',
             ),
